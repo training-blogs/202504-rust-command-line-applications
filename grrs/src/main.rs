@@ -1,33 +1,3 @@
-// Getting the arguments
-
-/*fn main() {
-    let pattern = std::env::args().nth(1).expect("no pattern given");
-    let path = std::env::args().nth(2).expect("no path given");
-
-    println!("pattern: {:?}, path: {:?}", pattern, path)
-}*/
-
-// CLI arguments as data types
-
-/*struct Cli {
-    pattern: String,
-    path: std::path::PathBuf,
-}
-
-fn main() {
-    let pattern = std::env::args().nth(1).expect("no pattern given");
-    let path = std::env::args().nth(2).expect("no path given");
-
-    let args = Cli {
-        pattern,
-        path: std::path::PathBuf::from(path),
-    };
-
-    println!("pattern: {:?}, path: {:?}", args.pattern, args.path);
-}*/
-
-// Parsing CLI arguments with Clap
-
 use clap::Parser;
 
 /// Search for a pattern in a file and display the lines that contain it.
@@ -41,6 +11,11 @@ struct Cli {
 
 fn main() {
     let args = Cli::parse();
+    let content = std::fs::read_to_string(&args.path).expect("could not read file");
 
-    println!("pattern: {:?}, path: {:?}", args.pattern, args.path)
+    for line in content.lines() {
+        if line.contains(&args.pattern) {
+            println!("{}", line);
+        }
+    }
 }
