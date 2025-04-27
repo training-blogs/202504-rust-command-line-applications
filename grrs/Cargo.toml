@@ -3,6 +3,12 @@ name = "grrs"
 version = "0.1.0"
 edition = "2024"
 
+[profile.release]
+#opt-level = "z"
+strip = true
+lto = true
+codegen-units = 1
+
 [dependencies]
 anyhow = "1.0.98"
 clap = { version = "4.5.37", features = ["derive"] }
