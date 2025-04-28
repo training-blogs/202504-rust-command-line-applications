@@ -1,0 +1,15 @@
+[package]
+name = "reqapi"
+version = "0.1.0"
+edition = "2024"
+
+[profile.release]
+#opt-level = "z"
+strip = true
+lto = true
+codegen-units = 1
+
+[dependencies]
+clap = { version = "4.5.37", features = ["derive"] }
+reqwest = { version = "0.12.15", features = [] }
+tokio = { version = "1.44.2", features = ["full"] }
