@@ -11,6 +11,7 @@ struct Cli {
 enum Commands {
     Hello,
     Reqw,
+    Upl { file_path: String },
 }
 
 fn say_hello() {
@@ -64,6 +65,34 @@ async fn get_and_post() -> Result<(), reqwest::Error> {
     Ok(())
 }
 
+async fn upload_file(file_path: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let url = format!(
+        "https://filebin.net/44b07ewvmtr2za42/test_{}.txt",
+        pseudo_random_value()
+    );
+
+    let client = reqwest::Client::new();
+    let form = reqwest::multipart::Form::new()
+        .file("file", file_path)
+        .await?;
+
+    let response = client.post(url).multipart(form).send().await?;
+
+    handle_response(response).await?;
+
+    Ok(())
+}
+
+fn pseudo_random_value() -> u128 {
+    let start = std::time::SystemTime::now();
+
+    let since_the_epoch = start
+        .duration_since(std::time::UNIX_EPOCH)
+        .expect("Time went backwards");
+
+    since_the_epoch.as_millis()
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
@@ -74,6 +103,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         Commands::Reqw => {
             get_and_post().await?;
+        }
+        Commands::Upl { file_path } => {
+            upload_file(file_path).await?;
         }
     }
 
